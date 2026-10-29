@@ -6,7 +6,7 @@
   "main": "src/calc.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "node --test \"test/**/*.test.js\""
+    "test": "node --test test/*.test.js"
   },
   "license": "MIT",
   "devDependencies": {
