@@ -20,6 +20,7 @@ jobs:
     runs-on: novita-scale-set
     steps:
       - name: Show runner
+        working-directory: ${{ github.workspace }}
         run: |
           echo "runner_name=$RUNNER_NAME"
 
@@ -50,6 +51,7 @@ jobs:
     runs-on: novita-scale-set
     steps:
       - name: Show runner
+        working-directory: ${{ github.workspace }}
         run: |
           echo "runner_name=$RUNNER_NAME"
 
