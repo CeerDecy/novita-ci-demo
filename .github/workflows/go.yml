@@ -1,0 +1,67 @@
+name: Go CI
+
+on:
+  push:
+    paths:
+      - "go-demo/**"
+      - ".github/workflows/go.yml"
+  pull_request:
+    paths:
+      - "go-demo/**"
+      - ".github/workflows/go.yml"
+
+defaults:
+  run:
+    working-directory: go-demo
+
+jobs:
+  lint:
+    name: go vet / gofmt / staticcheck
+    runs-on: novita-scale-set
+    steps:
+      - name: Show runner
+        run: |
+          echo "runner_name=$RUNNER_NAME"
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go-demo/go.mod
+          cache: false
+
+      - name: gofmt
+        run: |
+          out=$(gofmt -l .)
+          if [ -n "$out" ]; then
+            echo "files not gofmt'd:"; echo "$out"; exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: staticcheck
+        run: |
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          staticcheck ./...
+
+  test:
+    name: go test
+    runs-on: novita-scale-set
+    steps:
+      - name: Show runner
+        run: |
+          echo "runner_name=$RUNNER_NAME"
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go-demo/go.mod
+          cache: false
+
+      - name: go build
+        run: go build ./...
+
+      - name: go test
+        run: go test -race -cover -v ./...

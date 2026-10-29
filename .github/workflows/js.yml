@@ -1,0 +1,63 @@
+name: JavaScript CI
+
+on:
+  push:
+    paths:
+      - "js-demo/**"
+      - ".github/workflows/js.yml"
+  pull_request:
+    paths:
+      - "js-demo/**"
+      - ".github/workflows/js.yml"
+
+defaults:
+  run:
+    working-directory: js-demo
+
+jobs:
+  lint:
+    name: eslint
+    runs-on: novita-scale-set
+    steps:
+      - name: Show runner
+        run: |
+          echo "runner_name=$RUNNER_NAME"
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: js-demo/package-lock.json
+
+      - name: npm ci
+        run: npm ci
+
+      - name: eslint
+        run: npm run lint
+
+  test:
+    name: node --test
+    runs-on: novita-scale-set
+    strategy:
+      matrix:
+        node-version: ["20", "22"]
+    steps:
+      - name: Show runner
+        run: |
+          echo "runner_name=$RUNNER_NAME"
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: js-demo/package-lock.json
+
+      - name: npm ci
+        run: npm ci
+
+      - name: test
+        run: npm test
