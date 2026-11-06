@@ -17,7 +17,7 @@ defaults:
 jobs:
   lint:
     name: ruff
-    runs-on: novita-scale-set
+    runs-on: ppio-scale-set
     steps:
       - name: Show runner
         working-directory: ${{ github.workspace }}
